@@ -54,11 +54,35 @@
 
 **Note**: These commands are defined in `.claude/commands/` and are go-labs project-specific implementations of the generic TDD workflow available at https://github.com/Gaetan-Jaminon/Claude-Workflow-TDD
 
-### Project Organization
-- **Documentation**: See `platform-docs/` for architecture and project documentation
-- **Services**: All backend services are in `services/` directory
-- **Frontend**: Future frontend applications will be in `frontend/` directory
-- **Infrastructure**: DevOps and infrastructure code in `infrastructure/`
+### Project Organization - IMPORTANT: Multiple Git Repositories
+**⚠️ CRITICAL**: This is NOT a monorepo. Each component is a separate Git repository:
+
+#### Repository Structure:
+1. **Root Repository** (`/home/gaetan/Projects/go-labs/`):
+   - GitHub: `Gaetan-Jaminon/Claude-Workflow-TDD`
+   - Purpose: Generic TDD workflow methodology
+   - Contains: `.claude/` commands, workflow documentation
+   - **Note**: Root CLAUDE.md is for generic workflow, NOT for go-labs project
+
+2. **Go-Labs Memory Location**:
+   - **IMPORTANT**: Go-labs project memory is in `platform-docs/CLAUDE.md` (this file)
+   - **NOT** in root `/home/gaetan/Projects/go-labs/CLAUDE.md`
+   - Always update THIS file for go-labs specific information
+
+3. **Service Repositories** (each is independent):
+   - `services/billing-api/` → GitHub: `gjaminon-go-labs/billing-api`
+   - `services/catalog-api/` → GitHub: `gjaminon-go-labs/catalog-api` (future)
+   - `services/order-api/` → GitHub: `gjaminon-go-labs/order-api` (future)
+
+4. **Shared Directories** (in root repo):
+   - `platform-docs/` - Platform architecture and documentation (includes THIS memory file)
+   - `infrastructure/` - OpenShift/Kubernetes manifests and configs
+
+#### CI/CD Implications:
+- Each service has its own `.github/workflows/` in its own repo
+- Each service has independent versioning and releases
+- No monorepo tooling needed (no path filters, no shared workflows)
+- GitHub Actions workflows go in each service's repository
 
 ---
 
