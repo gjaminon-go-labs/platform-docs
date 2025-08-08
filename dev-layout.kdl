@@ -1,0 +1,18 @@
+layout {
+    pane split_direction="vertical" {
+        pane split_direction="horizontal" {
+            pane {
+                cwd "/home/gaetan/Projects/go-labs/services/billing-api"
+                command "make"
+                args "run-dev"
+            }
+            pane {
+                command "bash"
+                args "/home/gaetan/Projects/go-labs/platform-docs/btop-wrapper.sh"
+            }
+        }
+        pane {
+            cwd "/home/gaetan/Projects/go-labs"
+        }
+    }
+}
