@@ -43,9 +43,28 @@
 - Use `t.Run()` for subtests
 - Mock interfaces, not concrete types
 
+### Planning Requirements - MANDATORY
+**🚨 CRITICAL**: When creating ANY implementation plan, you MUST:
+1. **Always propose SUCCESS CRITERIA** - Specific, measurable, testable outcomes
+2. **Define test scenarios FIRST** - Following TDD principles (Red-Green-Refactor)
+3. **List expected behaviors** - What the system should do when complete
+4. **Include negative test cases** - What should fail and how
+5. **Specify acceptance criteria** - Clear definition of "done"
+
+**Example Success Criteria Format:**
+```
+✅ All unit tests pass locally before CI
+✅ Integration tests verify database interactions
+✅ Feature branch container image created with correct tag
+✅ Semantic version bumped appropriately (patch/minor/major)
+✅ PR passes all CI checks (tests, coverage, linting)
+✅ Claude GitHub review recommendations addressed
+✅ Feature merged to main and released
+```
+
 ### Available Commands (Project-Specific)
 - `/explore-feature` - Research phase (no coding)
-- `/plan-feature` - Create plan (stops for approval)
+- `/plan-feature` - Create plan (stops for approval) - MUST include success criteria
 - `/requirements-spec` - Define precise requirements
 - `/scope-check` - Validate against overengineering
 - `/test-first` - Write failing tests
@@ -487,8 +506,131 @@ go-labs/
 - **Documentation**: Complete stakeholder and technical documentation maintained
 - **Development Velocity**: Proven TDD workflow with collaborative AI review integration
 
+## Recent Session Summary (August 8, 2025)
+
+### 🎯 Major Accomplishments - GitHub Flow & Semantic Versioning
+
+#### Complete GitHub Flow Implementation
+Successfully implemented and tested the complete GitHub Flow with semantic versioning:
+
+1. **Semantic Versioning with go-semantic-release**:
+   - Automatic version detection from commit messages
+   - `fix:` commits → Patch version (x.x.Z) - e.g., 1.1.1 → 1.1.2
+   - `feat:` commits → Minor version (x.Y.z) - e.g., 1.1.2 → 1.2.0
+   - `BREAKING CHANGE:` → Major version (X.y.z) - e.g., 0.0.1 → 1.0.0
+   - GitHub releases with automatic changelog generation
+
+2. **Container Image Tagging Strategy**:
+   - **During PR**: Images tagged with branch name (e.g., `feature-add-invoicing`)
+   - **After Merge**: Images tagged with semantic version (e.g., `1.2.0`) and `latest`
+   - **NO** shortened version tags (like `1.0` or `1`) - only full semantic versions
+   - Fixed incorrect `pr-XX` tagging to use meaningful branch names
+
+3. **CI/CD Pipeline Configuration**:
+   - Consolidated all checks into single `.github/workflows/ci.yml`
+   - Parallel execution of coverage and Claude review after tests pass
+   - Container build only after integration tests succeed
+   - Semantic release only on main branch after merge
+
+### 🔧 Technical Implementation Details
+
+#### Pagination Feature (UC-B-005) - COMPLETED
+Successfully implemented list clients with pagination as a test case for GitHub Flow:
+
+**Implementation**:
+- Query parameters: `page` and `limit`
+- Defaults: page=1, limit=20 (max: 100)
+- Response includes pagination metadata
+- Full TDD approach with tests written first
+
+**PR #19 Results**:
+- All CI checks passed
+- Container built with branch tag (but only `pr-19` initially)
+- Merged successfully triggering v1.0.0 (BREAKING CHANGE)
+
+#### Container Registry Configuration
+- GitHub Container Registry (ghcr.io) properly configured
+- Requires `read:packages` scope for CLI access (`gh auth refresh -s read:packages`)
+- Images public by default in organization packages
+
+#### Version History Created
+- v0.0.1 - Initial version
+- v1.0.0 - Breaking change (pagination response format)
+- v1.1.0 - Mistaken feat commit (reverted)
+- v1.1.1 - Revert commit
+- v1.1.2 - Fix commit
+- v1.2.0 - Test feat commit (foo.txt)
+
+### 📦 Container Tagging Verification
+
+**Test with foo.txt (PR #20)**:
+- ✅ Feature branch container: `feature-add-foo-file`
+- ✅ After merge: `1.2.0` and `latest`
+- ✅ NO `pr-20` tag (as intended)
+
+**Complete Timeline**:
+1. 23:29 - Created feature branch and PR #20
+2. 23:30 - CI passed, container tagged as `feature-add-foo-file`
+3. 23:32 - PR merged to main
+4. 23:34 - Semantic release created v1.2.0
+5. 23:35 - Container images tagged with `1.2.0` and `latest`
+
+### 🏗️ Lessons Learned
+
+1. **Container Tagging Best Practices**:
+   - Use branch names for PR containers, not PR numbers
+   - Keep semantic versions as full x.y.z format
+   - Only `latest` tag alongside version tags
+
+2. **CI/CD Pipeline Optimization**:
+   - Run tests first, then build containers
+   - Parallel jobs where possible (coverage, Claude review)
+   - Semantic release only on main branch
+
+3. **GitHub CLI Configuration**:
+   - Need `read:packages` scope for container registry access
+   - Can be added with: `gh auth refresh -h github.com -s read:packages`
+
+4. **Semantic Release Behavior**:
+   - ANY commit to main triggers CI
+   - Semantic release decides if new version needed
+   - Automatic changelog and GitHub release creation
+
+### 🛠️ Current Configuration
+
+#### CI/CD Pipeline Jobs
+1. **Unit Tests, Lint and Build** - Runs first
+2. **Integration Tests** - Runs after unit tests
+3. **Coverage Report** - Runs in parallel after tests
+4. **Build Container** - Only after integration tests pass
+5. **Claude Code Review** - Runs in parallel after tests (PR only)
+6. **Semantic Release** - Only on main branch after merge
+
+#### Container Tagging Rules
+```yaml
+# Pull request - use branch name
+if PR:
+  tag = branch-name (with / replaced by -)
+  
+# Main branch push
+elif main:
+  tag = latest
+  
+# Semantic release (after merge)
+if new_release:
+  tags = [version, latest]
+```
+
+### 📊 Metrics & Quality Indicators
+
+- **GitHub Flow**: Fully operational with automated versioning
+- **Container Registry**: Properly configured with correct tagging
+- **CI/CD Pipeline**: All checks passing consistently
+- **Semantic Versioning**: Working correctly for all commit types
+- **Test Coverage**: Maintained at 95%+ with pagination implementation
+
 ---
 
-*Last Updated: August 4, 2025*  
-*Session: Complete Client CRUD Operations + Claude GitHub Review Integration + Project Memory Restoration*  
-*Status: All 4 Client Use Cases Complete - Ready for Invoice Domain Implementation*
+*Last Updated: August 8, 2025*  
+*Session: GitHub Flow & Semantic Versioning Implementation + Container Tagging Strategy*  
+*Status: Complete GitHub Flow with v1.2.0 Released - All Systems Operational*
